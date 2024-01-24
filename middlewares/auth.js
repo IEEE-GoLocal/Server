@@ -15,9 +15,8 @@ export const isAuthenticated = async (req, res, next) => {
 
   req.user = await User.findById(decoded._id);
   // console.log(req.user)
-//   if(!req.user){
-//     req.shopkeeper=await ShopKeeper.findById(decoded._id);
-  
-//   }
+  if(!req.user){
+    req.shopkeeper=await ShopKeeper.findById(decoded._id);
+  }
   next();
 }; 

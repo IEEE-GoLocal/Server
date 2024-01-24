@@ -1,4 +1,4 @@
-import { User } from "../models/user.js";
+import { ShopKeeper } from "../models/shopKeeper.js";
 import bcrypt from "bcrypt";
 import { sendCookie } from "../utils/features.js";
 import ErrorHandler from "../middlewares/error.js";
@@ -7,16 +7,16 @@ export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select("+password");
+    const shopKeeper = await ShopKeeper.findOne({ email }).select("+password");
 
-    if (!user) return next(new ErrorHandler("Invalid Email or Password", 400));
+    if (!shopKeeper) return next(new ErrorHandler("Invalid Email or Password", 400));
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, shopKeeper.password);
 
     if (!isMatch)
       return next(new ErrorHandler("Invalid Email or Password", 400));
 
-    sendCookie(user, res, `Welcome back, ${user.name}`, 200);
+    sendCookie(shopKeeper, res, `Welcome back, ${shopKeeper.name}`, 200);
   } catch (error) {
     next(error);
   }
@@ -26,15 +26,15 @@ export const register = async (req, res,next) => {
   try {
     const { name, email, phone_number, password } = req.body;
 
-    let user = await User.findOne({ email });
+    let shopKeeper = await ShopKeeper.findOne({ email });
 
-    if (user) return next(new ErrorHandler("User Already Exist", 400));
+    if (shopKeeper) return next(new ErrorHandler("ShopKeeper Already Exist", 400));
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    user = await User.create({ name, email, phone_number, password: hashedPassword });
+    shopKeeper = await ShopKeeper.create({ name, email, phone_number, password: hashedPassword });
 
-    sendCookie(user, res, "Registered Successfully", 201);
+    sendCookie(shopKeeper, res, "Registered Successfully", 201);
   } catch (error) {
     next(error);
     
@@ -44,8 +44,8 @@ export const register = async (req, res,next) => {
 export const getProfile= async(req,res,next)=>{
   try{
     const id= req.params.id;
-    const data= await User.findById(id)
-    if(!data) return next(new ErrorHandler("User doesn't Exist",400))
+    const data= await ShopKeeper.findById(id)
+    if(!data) return next(new ErrorHandler("ShopKeeper doesn't Exist",400))
     res.status(200).json({
       success:true,
       result: data,
@@ -58,9 +58,10 @@ export const getProfile= async(req,res,next)=>{
 
 
 export const getMyProfile = (req, res) => {
+    console.log(req.shopKeeper)
   res.status(200).json({
     success: true,
-    user: req.user,
+    shopKeeper: req.shopKeeper,
   });
 };
 
@@ -84,16 +85,15 @@ export const editProfile = async (req, res,next) => {
     try {
       const { name, email, phone_number } = req.body;
   
-      // let user = await User.findOne({ email });
-  
-      // if (user) return next(new ErrorHandler("User Already Exist", 400));
+    //   let shopKeeper = await ShopKeeper.findOne({ email });
+   
+    //   if (shopKeeper) return next(new ErrorHandler("ShopKeeper Already Exist", 400));
   
     //   const hashedPassword = await bcrypt.hash(password, 10);
   
-      let user = await User.updateMany({ name, email, phone_number });
-      console.log(user)
-    
-      // sendCookie(user, res, "Updated Successfully", 201);
+      let shopKeeper = await ShopKeeper.updateMany({ name, email, phone_number });
+      console.log(shopKeeper)
+  
       res.status(200).json({
         success: true,
         message:"Updated Successfully",
