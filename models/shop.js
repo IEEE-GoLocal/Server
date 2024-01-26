@@ -18,8 +18,15 @@ const schema = new mongoose.Schema({
         required:true,
     },
     available_products:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Product",
+        productId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Product",
+        },
+        quantity:{
+            type:Number,
+            required:true,
+        }
+        
     }],
     comments:[{
         commentorId: {

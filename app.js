@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser';
 import cors from "cors";
 import userRouter from './routes/user.js'
+import shopKeeperRouter from './routes/shopKeeper.js'
 export const app= express();
 
 
@@ -15,6 +16,7 @@ app.use(cors({ credentials: true, origin: 'http://localhost:3000', methods: ["GE
 
 
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/shopKeepers", shopKeeperRouter);
 
 app.get("/", (req, res) => {
     res.send("Nice Working");
