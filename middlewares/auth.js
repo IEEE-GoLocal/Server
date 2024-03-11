@@ -24,6 +24,7 @@ export const isAuthenticated = async (req, res, next) => {
     }
 
     if (!req.user && !req.shopKeeper) {
+      
       return res.status(404).json({
         success: false,
         message: "User or ShopKeeper not found",

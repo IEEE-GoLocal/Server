@@ -14,5 +14,10 @@ router.get("/logout", logout);
 
 router.get("/me", isAuthenticated, getMyProfile);
 router.get("/:id",getProfile)
+// router.post("newShop",isAuthenticated,addShop);
+
+// router.get("shops", isAuthenticated,shops);
+
+//try adding route to delete shop
 
 export default router;
