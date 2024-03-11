@@ -1,7 +1,8 @@
 import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
 import { sendCookie } from "../utils/features.js";
-import ErrorHandler from "../middlewares/error.js";
+
+import {errorMiddleware} from "../middlewares/error.js";
 
 export const login = async (req, res, next) => {
   try {
@@ -18,7 +19,7 @@ export const login = async (req, res, next) => {
 
     sendCookie(user, res, `Welcome back, ${user.name}`, 200);
   } catch (error) {
-    next(error);
+    errorMiddleware(err,req,res,next)
   }
 };
 
@@ -36,7 +37,7 @@ export const register = async (req, res,next) => {
 
     sendCookie(user, res, "Registered Successfully", 201);
   } catch (error) {
-    next(error);
+    errorMiddleware(err,req,res,next)
     
   }
 };
@@ -52,7 +53,7 @@ export const getProfile= async(req,res,next)=>{
     })
   }
   catch(err){
-    next(err)
+    errorMiddleware(err,req,res,next)
   }
 }
 
@@ -99,7 +100,7 @@ export const editProfile = async (req, res,next) => {
         message:"Updated Successfully",
       })
     } catch (error) {
-      next(error);
+      errorMiddleware(err,req,res,next)
       
     }
   };

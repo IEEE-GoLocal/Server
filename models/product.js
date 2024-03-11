@@ -5,11 +5,10 @@ const schema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    category:{
+    tags:[{
         type:String,
-        required:true,
-        
-    },
+        required:true, 
+    }],
     description:{
         type:String,
     },
