@@ -18,11 +18,9 @@ const chatConvosSchema = new Schema({
             sender: {
                 type: String,
                 enum:['user','shopkeeper'],
-                required: true
             },
             msg: {
                 type: String,
-                required: true
             }
         }
     ]
