@@ -1,45 +1,48 @@
 import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true,
+    name: {
+        type: String,
+        required: true,
     },
-    location:{
-        type:String,
-        required:true,
+    location: {
+        type: String,
+        required: true,
     },
-    latitude:{
-        type:double,
-        required:true,
+    shopkeeper_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "ShopKeeper",
+        required: true,
     },
-    longitude:{
-        type:double,
-        required:true,
+    latitude: {
+        type: Number,
+        required: true,
     },
-    available_products:[{
-        productId:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:"Product",
+    longitude: {
+        type: Number,
+        required: true,
+    },
+    available_products: [{
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Product",
         },
-        quantity:{
-            type:Number,
-            required:true,
+        quantity: {
+            type: Number,
+            required: true,
         }
-        
     }],
-    comments:[{
-        commentorId: {
+    comments: [{
+        commentatorId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-          },
+            required: true,
+        },
         comment: {
             type: String,
             required: true,
-          },
-
+        }
     }]
+});
 
-})
-
-export const Shop=mongoose.model("Shop",schema);
+export const Shop = mongoose.model("Shop", schema);
