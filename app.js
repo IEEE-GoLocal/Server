@@ -5,9 +5,10 @@ import cors from "cors";
 import userRouter from './routes/user.js'
 import shopKeeperRouter from './routes/shopKeeper.js'
 import productRouter from './routes/product.js'
+import shopRouter from './routes/shop.js'
 export const app= express();
 
-
+ 
 dotenv.config();
 
 // Using Middlewares
@@ -19,6 +20,7 @@ app.use(cors({ credentials: true, origin: 'http://localhost:3000', methods: ["GE
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/shopKeepers", shopKeeperRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/shops", shopRouter);
 app.get("/", (req, res) => {
     res.send("Nice Working");
 })
