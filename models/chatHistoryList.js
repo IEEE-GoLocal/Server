@@ -8,7 +8,11 @@ const chatHistoryListSchema = new Schema({
     userId: {
         type: String,
         required: true
-    }
+    },
+    username: {
+        type: String,
+        required: true
+    },
 })
 
 export const ChatHistoryList = model('ChatHistoryList', chatHistoryListSchema)

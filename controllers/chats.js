@@ -19,41 +19,56 @@ export async function getAllUsers(req, res, next) {
 
 // GET /api/v1/chats/conversation
 export async function getConversation(req, res, next) {
-    const { shopId, userId } = req.query
+    const { shopId, userId , username} = req.query
     try {
         const conversation = await ChatConvos.findOne({ userId, shopId })
         if (!conversation) {
-            res.status(404).json({ message: 'Conversation not found' })
+            // create new convo if not exists
+            const newConvoEntry = new ChatHistoryList({
+                shopId,
+                userId,
+                username
+            })
+            const newConvo = new ChatConvos({
+                roomId: shopId + userId,
+                shopId,
+                userId,
+                conversations: []
+            })
+            await newConvoEntry.save()
+            await newConvo.save()
+            const newConversation = await ChatConvos.findOne({ userId, shopId })
+            res.status(201).json(newConversation)
+        } else {
+            res.status(200).json(conversation)
         }
-        res.status(200).json(conversation)
     } catch (err) {
         errorMiddleware(err, req, res, next)
     }
 }
 
-// POST /api/v1/chats/newconvo
-export async function initNewConvo(req, res, next) {
-    const { userId, shopId } = req.body
-    const newConvoEntry = new ChatHistoryList({
-        shopId,
-        userId
-    })
-    const newConvo = new ChatConvos({
-        roomId: shopId + userId,
-        shopId,
-        userId,
-        conversations: []
-    })
+// // POST /api/v1/chats/newconvo
+// export async function initNewConvo(req, res, next) {
+//     const { userId, shopId } = req.body
+//     const newConvoEntry = new ChatHistoryList({
+//         shopId,
+//         userId
+//     })
+//     const newConvo = new ChatConvos({
+//         roomId: shopId + userId,
+//         shopId,
+//         userId,
+//         conversations: []
+//     })
 
-    try {
-        await newConvoEntry.save()
-        await newConvo.save()
-        res.status(200).json({ message: "initiated new convo" })
-    } catch (err) {
-        errorMiddleware(err, req, res, next)
-    }
-}
-
+//     try {
+//         await newConvoEntry.save()
+//         await newConvo.save()
+//         res.status(200).json({ message: "initiated new convo" })
+//     } catch (err) {
+//         errorMiddleware(err, req, res, next)
+//     }
+// }
 
 // POST /api/v1/chats/updateconvo
 export async function updateConvo(req, res, next) {
