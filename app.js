@@ -7,7 +7,15 @@ import shopKeeperRouter from './routes/shopKeeper.js'
 import productRouter from './routes/product.js'
 import chatsRouter from './routes/chats.js'
 import shopRouter from './routes/shop.js'
-export const app= express();
+import { Server } from 'socket.io';
+import { createServer } from 'node:http';
+export const app = express();
+export const server = createServer(app)
+export const io = new Server(server, {
+    cors: {
+        origin: '*'
+    }
+})
 dotenv.config();
 
 // Using Middlewares
@@ -19,8 +27,10 @@ app.use(cors({ credentials: true, origin: 'http://localhost:3000', methods: ["GE
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/shopKeepers", shopKeeperRouter);
 app.use("/api/v1/products", productRouter);
-app.use("/api/v1/chats",chatsRouter);
+app.use("/api/v1/chats", chatsRouter);
 app.use("/api/v1/shops", shopRouter);
 app.get("/", (req, res) => {
     res.send("Nice Working");
 })
+
+
