@@ -1,5 +1,6 @@
 import { Shop } from "../models/shop.js";
 import { errorMiddleware } from "../middlewares/error.js";
+import axios from "axios"
 
 export const getShops = async (req, res, next) => {
   try {
@@ -19,13 +20,22 @@ export const addComment = async (req, res, next) => {
     const shopId = req.params.id;
     const { comment } = req.body;
 
+    const sentiment=await axios.post("http://127.0.0.1:5555/predict",{
+      msg:comment
+    },{
+      withCredentials: true
+    })
+
+    console.log(sentiment.data)
+
     const shop = await Shop.findByIdAndUpdate(
       shopId,
       {
         $push: {
           comments: {
             commentatorId: req.user._id,
-            comment: comment
+            comment: comment,
+            sentiment: sentiment.data.prediction
           }
         }
       },

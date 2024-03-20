@@ -41,6 +41,10 @@ const schema = new mongoose.Schema({
         comment: {
             type: String,
             required: true,
+        },
+        sentiment:{
+            type:Boolean,
+            required:true
         }
     }]
 });

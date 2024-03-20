@@ -202,11 +202,3 @@ export const getShops = async (req, res, next) => {
   }
 };
 
-export const addComment=async (req,res,next)=>{
-  try{
-    
-  }
-  catch(err){
-    errorMiddleware(err, req, res, next);
-  }
-}
