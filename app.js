@@ -29,6 +29,27 @@ app.use("/api/v1/shopKeepers", shopKeeperRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/chats", chatsRouter);
 app.use("/api/v1/shops", shopRouter);
+app.use("/api/v1/admin/login",(req,res)=>{
+    try{
+    const {email,password}=req.body
+    if (email === "meet@gmail.com" && password === "meet123") {
+        res.status(200).json({
+            success: true,
+            message:"Welcome meet admin"
+        })
+    } else {
+        res.status(404).json({
+            success:false,
+            message:"Invalid email or password"
+        })
+    }}
+    catch(err){
+        res.status(500).json({
+            success:false,
+            message:err.message
+        })
+    }
+})
 app.get("/", (req, res) => {
     res.send("Nice Working");
 })

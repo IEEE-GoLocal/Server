@@ -3,7 +3,7 @@ import { Shop } from "../models/shop.js";
 import bcrypt from "bcrypt";
 import { sendCookie } from "../utils/features.js";
 import { errorMiddleware } from "../middlewares/error.js";
-
+ 
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
