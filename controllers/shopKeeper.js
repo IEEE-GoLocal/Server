@@ -197,8 +197,21 @@ export const getShops = async (req, res, next) => {
 
     res.status(200).json({ success: true, shops: shops });
   } catch (error) {
-    next(error);
     errorMiddleware(error, req, res, next);
   }
 };
 
+export const getShopById = async (req, res, next) => {
+  try {
+    const shopId = req.params.id;
+    const shop = await Shop.findById(shopId);
+    if (!shop) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Shop doesn't Exist" });
+    }
+    res.status(200).json({ success: true, shop: shop });
+  } catch (error) {
+    errorMiddleware(error, req, res, next);
+  }
+};

@@ -43,7 +43,7 @@ const schema = new mongoose.Schema({
             required: true,
         },
         sentiment:{
-            type:Boolean,
+            type:String,
             required:true
         }
     }]

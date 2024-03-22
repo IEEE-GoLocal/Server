@@ -1,6 +1,7 @@
 import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
 import { sendCookie } from "../utils/features.js";
+import {Shop} from "../models/shop.js";
 
 export const login = async (req, res, next) => {
   try {
@@ -121,6 +122,32 @@ export const editProfile = async (req, res, next) => {
     res.status(500).json({
       success: false,
       message: "Internal Server Error"
+    });
+  }
+};
+export const shopsWithinRadius = async (req, res, next) => {
+  try {
+    const { latitude, longitude, radius } = req.body;
+    console.log(latitude, longitude, radius);
+    const shops = await Shop.find({
+      loc: {
+        $geoWithin: {
+          $center: [[longitude, latitude], radius] // Corrected $center usage
+        }
+      }
+    });
+
+    console.log(shops);
+    res.status(200).json({
+      success: true,
+      message: "Fetched shops",
+      shops: shops
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error couldn't fetch shops"
     });
   }
 };
