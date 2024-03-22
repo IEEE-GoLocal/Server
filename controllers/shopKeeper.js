@@ -3,25 +3,18 @@ import { Shop } from "../models/shop.js";
 import bcrypt from "bcrypt";
 import { sendCookie } from "../utils/features.js";
 import { errorMiddleware } from "../middlewares/error.js";
- 
+import axios from "axios";
+
+const api = "65fc95357628d302108426jyq94817d"; // Move API key to a secure location
+
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     const shopKeeper = await ShopKeeper.findOne({ email }).select("+password");
 
-    if (!shopKeeper) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid Email or Password" });
-    }
-
-    const isMatch = await bcrypt.compare(password, shopKeeper.password);
-
-    if (!isMatch) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid Email or Password" });
+    if (!shopKeeper || !(await bcrypt.compare(password, shopKeeper.password))) {
+      return res.status(400).json({ success: false, message: "Invalid Email or Password" });
     }
 
     sendCookie(shopKeeper, res, `Welcome back, ${shopKeeper.name}`, 200);
@@ -37,9 +30,7 @@ export const register = async (req, res, next) => {
     let shopKeeper = await ShopKeeper.findOne({ email });
 
     if (shopKeeper) {
-      return res
-        .status(400)
-        .json({ success: false, message: "ShopKeeper already exists" });
+      return res.status(400).json({ success: false, message: "ShopKeeper already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -62,9 +53,7 @@ export const getProfile = async (req, res, next) => {
     const id = req.params.id;
     const data = await ShopKeeper.findById(id);
     if (!data) {
-      return res
-        .status(400)
-        .json({ success: false, message: "ShopKeeper doesn't Exist" });
+      return res.status(400).json({ success: false, message: "ShopKeeper doesn't Exist" });
     }
     res.status(200).json({ success: true, result: data });
   } catch (error) {
@@ -110,11 +99,19 @@ export const addShop = async (req, res, next) => {
     const {
       name,
       location,
-      shopkeeper_id,
-      latitude,
-      longitude,
       available_products,
     } = req.body;
+    const shopkeeper_id=req.shopKeeper._id
+    const api="65fc95357628d302108426jyq94817d"
+    // console.log(latitude, longitude, radius);
+    const data = await axios.get(`https://geocode.maps.co/search?q=${location}&api_key=${api}`, {
+            cors: true,
+            withCredentials: true
+        });
+
+    console.log(data.data)
+    const latitude = parseFloat(data.data[0].lat)
+    const longitude = parseFloat(data.data[0].lon)
     const existingShop = await Shop.findOne({ name, shopkeeper_id });
     if (existingShop) {
       return res

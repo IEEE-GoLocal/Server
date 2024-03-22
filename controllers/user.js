@@ -2,6 +2,7 @@ import { User } from "../models/user.js";
 import bcrypt from "bcrypt";
 import { sendCookie } from "../utils/features.js";
 import {Shop} from "../models/shop.js";
+import axios from "axios"
 
 export const login = async (req, res, next) => {
   try {
@@ -132,7 +133,43 @@ export const shopsWithinRadius = async (req, res, next) => {
     const shops = await Shop.find({
       loc: {
         $geoWithin: {
-          $center: [[longitude, latitude], radius] // Corrected $center usage
+          $center: [[longitude, latitude], radius] 
+        }
+      }
+    });
+
+    console.log(shops);
+    res.status(200).json({
+      success: true,
+      message: "Fetched shops",
+      shops: shops
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error couldn't fetch shops"
+    });
+  }
+};
+
+export const shopsWithinRadiusLoc = async (req, res, next) => {
+  try {
+    const { location, radius } = req.body;
+    const api="65fc95357628d302108426jyq94817d"
+    // console.log(latitude, longitude, radius);
+    const data = await axios.get(`https://geocode.maps.co/search?q=${location}&api_key=${api}`, {
+            cors: true,
+            withCredentials: true
+        });
+
+    console.log(data.data)
+    const latitude = data.data[0].lat
+    const longitude = data.data[0].lon
+    const shops = await Shop.find({
+      loc: {
+        $geoWithin: {
+          $center: [[longitude, latitude], radius] 
         }
       }
     });
